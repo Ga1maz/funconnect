@@ -1,1 +1,1 @@
-DB_connection: "jdbc:mysql://u9_EPadopiZaJ:P%2B9h.qhmj38%5EoA62MU1dovVP@mysql.cloa.su:3306/s9_site?useSSL=false&characterEncoding=UTF-8"
+DB_connection: "jdbc:mysql://localhost:3306/funconnect?user=root&password=1234"
