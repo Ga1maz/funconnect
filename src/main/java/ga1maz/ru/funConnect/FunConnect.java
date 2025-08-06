@@ -3,19 +3,25 @@ package ga1maz.ru.funConnect;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public final class FunConnect extends JavaPlugin implements Listener {
+public final class FunConnect extends JavaPlugin implements Listener, TabCompleter {
 
     private final String githubLatestReleaseApi = "https://api.github.com/repos/Ga1maz/funconnect/releases/latest";
 
@@ -30,7 +36,40 @@ public final class FunConnect extends JavaPlugin implements Listener {
         checkLicense();
         checkForUpdates();
         getServer().getPluginManager().registerEvents(this, this);
+
+        getCommand("funconnect").setTabCompleter(this);
+
         getLogger().info("FunConnect загружен!");
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+
+        if (!command.getName().equalsIgnoreCase("funconnect")) return null;
+
+        List<String> suggestions = new ArrayList<>();
+
+        if (args.length == 1) {
+            suggestions = Arrays.asList("info", "list", "reload", "help");
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("info")) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    suggestions.add(p.getName());
+                }
+            } else {
+                try (Connection conn = getConnection()) {
+                    Statement stmt = conn.createStatement();
+                    ResultSet rs = stmt.executeQuery("SELECT id FROM Donat");
+                    while (rs.next()) {
+                        suggestions.add(String.valueOf(rs.getInt("id")));
+                    }
+                } catch (SQLException e) {
+                    suggestions.add("<FunID>");
+                }
+            }
+        }
+
+        return suggestions;
     }
 
     @EventHandler
