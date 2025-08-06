@@ -1,11 +1,15 @@
 name: FunConnect
-version: '1.3'
+version: '1.4'
 main: ga1maz.ru.funConnect.FunConnect
 api-version: '1.21'
 authors: [ Ga1maz ]
+website: 'https://ga1maz.ru'
+description: 'Плагин для синхронизации с сайтом'
+localization: ru_RU
 
 commands:
   funconnect:
+    aliases: [fc]
     description: "Команда FunConnect"
     usage: |
       /funconnect {nick} {number} - установить FunID
