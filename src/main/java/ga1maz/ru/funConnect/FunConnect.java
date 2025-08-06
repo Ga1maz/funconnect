@@ -348,12 +348,16 @@ public final class FunConnect extends JavaPlugin implements Listener, TabComplet
     private void showInfo(CommandSender sender, String nick) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT u.balance, u.donat_id, u.donat_id as funid, d.name, d.hex1, d.hex2 " +
+                    "SELECT u.id, u.yandex_id, u.yandex_name, u.yandex_surname, u.balance, u.donat_id, u.donat_id as funid, " +
+                            "d.name, d.hex1, d.hex2 " +
                             "FROM User u LEFT JOIN Donat d ON u.donat_id = d.id WHERE u.nick_minecraft = ?");
             ps.setString(1, nick);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
+                int id = rs.getInt("id");
+                String yandexName = rs.getString("yandex_name");
+                String yandexSurname = rs.getString("yandex_surname");
                 double balance = rs.getDouble("balance");
                 int donatId = rs.getInt("donat_id");
                 String donatName = rs.getString("name");
@@ -361,7 +365,10 @@ public final class FunConnect extends JavaPlugin implements Listener, TabComplet
                 String hex2 = rs.getString("hex2");
                 int funid = rs.getInt("funid");
 
-                sender.sendMessage("§6--- Инфа игрока §e" + nick + " §6---");
+                sender.sendMessage("§6--- Информация игрока §e" + nick + " §6---");
+                sender.sendMessage("§fID в базе: §a" + id);
+                sender.sendMessage("§fИмя: §a" + (yandexName != null ? yandexName : "§7Нет"));
+                sender.sendMessage("§fФамилия: §a" + (yandexSurname != null ? yandexSurname : "§7Нет"));
                 sender.sendMessage("§fБаланс: §a" + balance);
 
                 String donatDisplay = donatName != null ?
@@ -369,7 +376,7 @@ public final class FunConnect extends JavaPlugin implements Listener, TabComplet
                         "§7Нет";
 
                 sender.sendMessage("§fДонат: §b" + donatDisplay);
-                sender.sendMessage("§fFunID: §d" + funid);
+                sender.sendMessage("§fFunID из БД: §d" + funid);
             } else {
                 sender.sendMessage("§cИгрок с ником " + nick + " не найден в базе!");
             }
