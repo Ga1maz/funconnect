@@ -1,0 +1,22 @@
+name: FunConnect
+version: '1.0'
+main: ga1maz.ru.funConnect.FunConnect
+api-version: '1.21'
+authors: [ Ga1maz ]
+
+commands:
+  funconnect:
+    description: "Команда FunConnect"
+    usage: |
+      /funconnect {nick} {number} - установить FunID
+      /funconnect info {nick} - информация об игроке
+      /funconnect list - список донатов
+      /funconnect reload - перезагрузить конфиг
+      /funconnect help - помощь
+    permission: funconnect.use
+
+
+permissions:
+  funconnect.use:
+    description: "Разрешение на использование /funconnect"
+    default: op
